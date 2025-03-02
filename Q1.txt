@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Employee Records</h2>
+    <button onclick="loadData()">ViewRecord</button>
+    <button onclick="Update()">UpdateData</button>
+    <button onclick="Add()">AddData</button>
+    <p id="pId"></p>
+    <script>
+        var xmldoc;
+        function loadData(){
+            var xhttp=new XMLHttpRequest();
+            xhttp.open("GET","finalTry.xml",true);
+            xhttp.send();
+            xhttp.onreadystatechange=function(){
+                if(xhttp.readyState==4 && xhttp.status==200){
+                    myFunction(xhttp);
+                }
+            }
+        }
+//view Record
+        function myFunction(xml){
+            var x,text="";
+            xmldoc=xml.responseXML;
+            x=xmldoc.getElementsByTagName("Employee");
+            text+=`<table border="1"><tr>
+                    <th>Specialization</th>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Branch</th>
+                    <th>Department</th>
+                    <th>Position</th>
+                    <th>Year</th>
+                </tr>`;
+            for(var i=0;i<x.length;i++){
+                text+="<tr><td>"+
+                    x[i].getAttribute("Spes")+"</td><td>"+
+                    x[i].getElementsByTagName("ID")[0].childNodes[0].nodeValue+"</td><td>"+
+                    x[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue+"</td><td>"+
+                    x[i].getElementsByTagName("Branch")[0].childNodes[0].nodeValue+"</td><td>"+
+                    x[i].getElementsByTagName("Branch")[0].getAttribute("Department")+"</td><td>"+
+                    x[i].getElementsByTagName("Position")[0].childNodes[0].nodeValue+"</td><td>"+
+                    x[i].getElementsByTagName("Year")[0].childNodes[0].nodeValue+"</td></tr>"
+            }
+            text+="</table>";
+            document.getElementById("pId").innerHTML=text;
+
+        }
+//update data
+        function Update(){
+            var x,name;
+            x=xmldoc.getElementsByTagName("Employee");
+            for(var i=0;i<x.length;i++){
+                name=x[i].getElementsByTagName("Name")[0].childNodes[0].nodeValue;
+                if(name=="Sarah Johnson"){
+                    x[i].getElementsByTagName("Position")[0].childNodes[0].nodeValue="Senior Loan Officer";
+                    x[i].getElementsByTagName("Year")[0].childNodes[0].nodeValue="9";
+		    x[i].setAttribute("Spes","Advanced Mathamatics");
+                    myFunction({responseXML:xmldoc});
+                    break;
+                }
+            }
+        }
+//add data
+        function Add(){
+            var newemployee,id,name,branch,position,year;
+
+            newemployee=xmldoc.createElement("Employee");
+            newemployee.setAttribute("Spes","medical");
+
+            id=xmldoc.createElement("ID");
+            id.appendChild(xmldoc.createTextNode("111"));
+            newemployee.appendChild(id);
+
+            name=xmldoc.createElement("Name");
+            name.appendChild(xmldoc.createTextNode("Mehr"));
+            newemployee.appendChild(name);
+
+            branch=xmldoc.createElement("Branch");
+            branch.appendChild(xmldoc.createTextNode("uptown"));
+            branch.setAttribute("Department","internal medical");
+            newemployee.appendChild(branch);
+
+            position=xmldoc.createElement("Position");
+            position.appendChild(xmldoc.createTextNode("officer"));
+            newemployee.appendChild(position);
+
+            year=xmldoc.createElement("Year");
+            year.appendChild(xmldoc.createTextNode("4"));
+            newemployee.appendChild(year);
+
+            xmldoc.documentElement.appendChild(newemployee);
+            myFunction({responseXML:xmldoc});
+            
+        }
+    </script>
+</body>
+</html>
