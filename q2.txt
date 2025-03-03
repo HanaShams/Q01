@@ -1,0 +1,39 @@
+
+<body>
+    <h2>Product Catalog</h2>
+    <div id="divId"></div>
+    <button onclick="loadMore()">Load More</button>
+
+    <script>
+        var productContainer = document.getElementById("divId");
+        var productsLoaded = 0;
+        var allProducts = [];
+        
+        function fetchProducts() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.open("GET", "products.txt", true);
+            xhttp.send();
+            xhttp.onreadystatechange = function () {
+                if (xhttp.readyState === 4 && xhttp.status === 200) {
+                    allProducts = xhttp.responseText.split("\n");
+                    loadMore();
+                }
+            };
+        }
+
+        function loadMore() {
+            var newProducts = allProducts.slice(productsLoaded, productsLoaded + 5);
+            for (var i = 0; i < newProducts.length; i++) {
+                var product = newProducts[i];
+                var div = document.createElement("div");
+                div.className = "product";
+                div.textContent = product;
+                productContainer.appendChild(div);
+            }
+            productsLoaded += 5;
+        }
+        
+        fetchProducts();
+    
+    </script>
+    </body>
